@@ -49,6 +49,22 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""CameraInput"",
+                    ""type"": ""Value"",
+                    ""id"": ""a6051a74-2aa3-4969-bda0-c434dd5a7f80"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""JumpHeld"",
+                    ""type"": ""Value"",
+                    ""id"": ""55612fb2-bb44-4810-9c33-334e34b36fbe"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -183,6 +199,50 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0b9a9fcb-0460-4610-964c-a258c924536a"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Controller"",
+                    ""action"": ""CameraInput"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9a8a2f46-8fe8-4260-9bb6-a70697f9aeb9"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardAndMouse"",
+                    ""action"": ""CameraInput"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""37084ce9-94fe-4431-8716-82c85a4df483"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Controller"",
+                    ""action"": ""JumpHeld"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1d530e41-e50e-410b-b118-c3caf5df1538"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardAndMouse"",
+                    ""action"": ""JumpHeld"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -223,6 +283,8 @@ public class @Controls : IInputActionCollection, IDisposable
         m_CharacterController_Jump = m_CharacterController.FindAction("Jump", throwIfNotFound: true);
         m_CharacterController_Run = m_CharacterController.FindAction("Run", throwIfNotFound: true);
         m_CharacterController_Interact = m_CharacterController.FindAction("Interact", throwIfNotFound: true);
+        m_CharacterController_CameraInput = m_CharacterController.FindAction("CameraInput", throwIfNotFound: true);
+        m_CharacterController_JumpHeld = m_CharacterController.FindAction("JumpHeld", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -276,6 +338,8 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_CharacterController_Jump;
     private readonly InputAction m_CharacterController_Run;
     private readonly InputAction m_CharacterController_Interact;
+    private readonly InputAction m_CharacterController_CameraInput;
+    private readonly InputAction m_CharacterController_JumpHeld;
     public struct CharacterControllerActions
     {
         private @Controls m_Wrapper;
@@ -284,6 +348,8 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @Jump => m_Wrapper.m_CharacterController_Jump;
         public InputAction @Run => m_Wrapper.m_CharacterController_Run;
         public InputAction @Interact => m_Wrapper.m_CharacterController_Interact;
+        public InputAction @CameraInput => m_Wrapper.m_CharacterController_CameraInput;
+        public InputAction @JumpHeld => m_Wrapper.m_CharacterController_JumpHeld;
         public InputActionMap Get() { return m_Wrapper.m_CharacterController; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -305,6 +371,12 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Interact.started -= m_Wrapper.m_CharacterControllerActionsCallbackInterface.OnInteract;
                 @Interact.performed -= m_Wrapper.m_CharacterControllerActionsCallbackInterface.OnInteract;
                 @Interact.canceled -= m_Wrapper.m_CharacterControllerActionsCallbackInterface.OnInteract;
+                @CameraInput.started -= m_Wrapper.m_CharacterControllerActionsCallbackInterface.OnCameraInput;
+                @CameraInput.performed -= m_Wrapper.m_CharacterControllerActionsCallbackInterface.OnCameraInput;
+                @CameraInput.canceled -= m_Wrapper.m_CharacterControllerActionsCallbackInterface.OnCameraInput;
+                @JumpHeld.started -= m_Wrapper.m_CharacterControllerActionsCallbackInterface.OnJumpHeld;
+                @JumpHeld.performed -= m_Wrapper.m_CharacterControllerActionsCallbackInterface.OnJumpHeld;
+                @JumpHeld.canceled -= m_Wrapper.m_CharacterControllerActionsCallbackInterface.OnJumpHeld;
             }
             m_Wrapper.m_CharacterControllerActionsCallbackInterface = instance;
             if (instance != null)
@@ -321,6 +393,12 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Interact.started += instance.OnInteract;
                 @Interact.performed += instance.OnInteract;
                 @Interact.canceled += instance.OnInteract;
+                @CameraInput.started += instance.OnCameraInput;
+                @CameraInput.performed += instance.OnCameraInput;
+                @CameraInput.canceled += instance.OnCameraInput;
+                @JumpHeld.started += instance.OnJumpHeld;
+                @JumpHeld.performed += instance.OnJumpHeld;
+                @JumpHeld.canceled += instance.OnJumpHeld;
             }
         }
     }
@@ -349,5 +427,7 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnRun(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
+        void OnCameraInput(InputAction.CallbackContext context);
+        void OnJumpHeld(InputAction.CallbackContext context);
     }
 }

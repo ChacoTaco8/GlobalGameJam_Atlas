@@ -5,6 +5,7 @@ using Cinemachine;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class AtlasShruggedAndDidTheLocomotion : MonoBehaviour, AxisState.IInputAxisProvider
 {
@@ -77,7 +78,28 @@ public class AtlasShruggedAndDidTheLocomotion : MonoBehaviour, AxisState.IInputA
     //Only comes from true input not this fake pogostick
     public bool HasTrueFreshJumpRequest =>  ((Time.unscaledTime - _trueJumpReqTimestamp) < _jumpWindow);
 
+    public Controls controls;
+
+    private void OnEnable()
+    {
+        controls = new Controls();
+        controls.Enable();
+        controls.CharacterController.JumpHeld.Enable();
+        controls.CharacterController.Jump.Enable();
+        controls.CharacterController.Movement.Enable();
+        controls.CharacterController.CameraInput.Enable();
+    }
     
+    private void OnDisable()
+    {
+        controls.CharacterController.Jump.Disable();
+        controls.CharacterController.JumpHeld.Disable();
+        controls.CharacterController.Movement.Disable();
+        controls.CharacterController.CameraInput.Disable();
+        controls.Disable();
+        controls = null;
+    }
+
     private void OnValidate()
     {
         _minGroundDotProduct = Mathf.Cos(Mathf.Deg2Rad * _maxGroundAngle);
@@ -169,30 +191,34 @@ public class AtlasShruggedAndDidTheLocomotion : MonoBehaviour, AxisState.IInputA
     [SerializeField]
     private CinemachineFreeLook _cinemachine;
 
+    Vector2 _movementInput = new Vector2(0f,0f); //until we get input up and running
+    Vector2 _cameraInput = new Vector2(0f,0f); //until we get input up and running
     
     public float GetAxisValue(int axis)
     {
+        
         if (axis == _XCamAxis)
         {
-            return 0f;
-            //return HelInput.Axis(Action.CamHorizontal);
+            return _cameraInput.x;
         }
         if (axis == _YCamAxis)
         {
-            return 0f;
-            //return HelInput.Axis(Action.CamVertical);
+            return _cameraInput.y;
         }
 
         return 0f;
 
     }
-    
-    // Update is called once per frame
+
     void Update()
     {
-        
-        Vector2 input = new Vector2(0f,1f); //until we get input up and running
-       input = Vector2.ClampMagnitude(input,1.0f);
+
+        _cameraInput = controls.CharacterController.CameraInput.ReadValue<Vector2>();
+        _cameraInput= Vector2.ClampMagnitude(_cameraInput,1.0f);
+        _movementInput = controls.CharacterController.Movement.ReadValue<Vector2>();
+        _movementInput = Vector2.ClampMagnitude(_movementInput,1.0f);
+      
+       
 
         if (_PlayerInputSpace != null)
         {
@@ -202,15 +228,15 @@ public class AtlasShruggedAndDidTheLocomotion : MonoBehaviour, AxisState.IInputA
             Vector3 right = _PlayerInputSpace.right;
             right.y = 0.0f;
             right.Normalize();
-            desiredVelocity = (right * input.x + input.y * fwd )*maxSpeed;
+            desiredVelocity = (right * _movementInput.x + _movementInput.y * fwd )*maxSpeed;
         }
         else
         {
-            desiredVelocity = new Vector3(input.x, 0f, input.y) * maxSpeed;
+            desiredVelocity = new Vector3(_movementInput.x, 0f, _movementInput.y) * maxSpeed;
         }
 
-        //todo input
-        bool jumpButtonHeld = false; //HelInput.ButtonHeld(Action.Jump);
+        var jumpButtonHeld = controls.CharacterController.JumpHeld.ReadValue<float>() > 0.1f;
+        var jumpButtonPressed= controls.CharacterController.Jump.triggered;
         if (jumpButtonHeld)
         {
             _jumpGravityCurveButtonHeldT += jumpGravityCurveButtonHeldTSpeed * Time.deltaTime;
@@ -224,7 +250,6 @@ public class AtlasShruggedAndDidTheLocomotion : MonoBehaviour, AxisState.IInputA
         }
 
 
-        var jumpButtonPressed = false; 
         if (jumpButtonPressed)
         {
             _jumpReqTimestamp = Time.unscaledTime;
@@ -332,7 +357,6 @@ public class AtlasShruggedAndDidTheLocomotion : MonoBehaviour, AxisState.IInputA
             return false;
         }
 
-        //hit.collider.
         if (hit.normal.y < getMinDot(hit.collider.gameObject.layer))
         {
             return false;
@@ -463,7 +487,6 @@ public class AtlasShruggedAndDidTheLocomotion : MonoBehaviour, AxisState.IInputA
     void Land()
     {
         Debug.Log("We think we landed just about now..");
-        
         //todo land animationStates etc.. or do what we want to do.
         //HelmettaVisualAnimator?.SetTrigger("Landed"); 
     }
