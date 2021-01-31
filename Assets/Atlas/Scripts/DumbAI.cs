@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using SensorToolkit;
@@ -66,7 +67,7 @@ public class DumbAI : MonoBehaviour
         }
         else if (isSearchingForPlayer)
         {
-            if (Vector3.Distance(transform.position, lastTargetPosition) <= 0.4f)
+            if (Vector3.Distance(transform.position, lastTargetPosition) <= 0.04f)
             {
                 isSearchingForPlayer = false;
             }
@@ -105,7 +106,7 @@ public class DumbAI : MonoBehaviour
         if (currentSpeed < chaseSpeed) currentSpeed += increasedSpeedRatio;
         else currentSpeed = chaseSpeed;
         Vector3 moveDirection = (target.transform.position - transform.position).normalized;
-        moveDirection = new Vector3(moveDirection.x, Mathf.Clamp(moveDirection.y, 1.4f, 10.8f), moveDirection.z);
+        moveDirection = new Vector3(moveDirection.x, moveDirection.y, moveDirection.z);
         transform.position += moveDirection * (currentSpeed * Time.deltaTime);
     }
 
@@ -167,6 +168,7 @@ public class DumbAI : MonoBehaviour
             transform.position += Vector3.forward * (moveSpeed * Time.deltaTime);
             transform.rotation = Quaternion.LookRotation(Vector3.forward);
         }
+        transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, 1.4f, 10.8f), transform.position.z);
     }
 
     #endregion

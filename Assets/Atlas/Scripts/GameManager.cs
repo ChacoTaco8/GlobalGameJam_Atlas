@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     
     public Text crewmatesFoundText;
     public Text returnToSpaceShipText;
+    public Text winLoseText;
 
     public bool allCrewmatesFound = false;
     public bool hasReturnedToShip = false;
@@ -46,16 +47,21 @@ public class GameManager : MonoBehaviour
     {
         crewmatesFound = 0;
         crewmatesFoundText.text = "0";
+        winLoseText.enabled = false;
         StartTime();
     }
 
     private void LoseGame()
     {
+        winLoseText.text = "Game Over\nPress Enter / Pause to play again";
+        winLoseText.enabled = true;
         StopTime();
     }
 
     private void WinGame()
     {
+        winLoseText.text = "You win!\nPress Enter / Pause to play again";
+        winLoseText.enabled = true;
         StopTime();
     }
 
@@ -77,6 +83,7 @@ public class GameManager : MonoBehaviour
         {
             // Separate audio for finding all crewmates? 
             returnToSpaceShipText.enabled = true;
+            allCrewmatesFound = true;
         }
         else
         {
