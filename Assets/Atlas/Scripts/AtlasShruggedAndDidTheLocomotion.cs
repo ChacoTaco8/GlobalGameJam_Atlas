@@ -486,8 +486,7 @@ public class AtlasShruggedAndDidTheLocomotion : MonoBehaviour, AxisState.IInputA
 
     void Land()
     {
-        Debug.Log("We think we landed just about now..");
-        //todo land animationStates etc.. or do what we want to do.
+        //Debug.Log("We think we landed just about now..");
         //HelmettaVisualAnimator?.SetTrigger("Landed"); 
     }
 
