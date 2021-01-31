@@ -37,7 +37,6 @@ public class DumbAI : MonoBehaviour
     void Start()
     {
         _sensor = GetComponent<Sensor>();
-        Debug.Log(name + " has entered the patrol state.");
         state = State.patrol;
     }
 
@@ -106,6 +105,7 @@ public class DumbAI : MonoBehaviour
         if (currentSpeed < chaseSpeed) currentSpeed += increasedSpeedRatio;
         else currentSpeed = chaseSpeed;
         Vector3 moveDirection = (target.transform.position - transform.position).normalized;
+        moveDirection = new Vector3(moveDirection.x, Mathf.Clamp(moveDirection.y, 1.4f, 10.8f), moveDirection.z);
         transform.position += moveDirection * (currentSpeed * Time.deltaTime);
     }
 
@@ -113,6 +113,7 @@ public class DumbAI : MonoBehaviour
     {
         isSearchingForPlayer = true;
 
+        // Play audio intense music
         SensePlayer();
         SetSpeedAndRotation();
         Vector3 moveDirection = (lastTargetPosition - transform.position).normalized;
@@ -144,6 +145,7 @@ public class DumbAI : MonoBehaviour
     private void PatrolState()
     {
         isSearchingForPlayer = false;
+        // Play audio make sure the calm song is played.
 
         // Get random direction, move for a random duration, go back to idle or repeat.
         if (Time.time >= lastPatrolDirectionTime + patrolDuration)
