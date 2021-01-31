@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -31,6 +32,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        StartGame();
+    }
+
     private void Update()
     {
         if (hasReturnedToShip)
@@ -46,13 +52,14 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         crewmatesFound = 0;
-        crewmatesFoundText.text = "0";
-        winLoseText.enabled = false;
+        crewmatesFoundText.text = crewmatesTotal.ToString();
+        CleanUI();
         StartTime();
     }
 
     private void LoseGame()
     {
+        CleanUI();
         winLoseText.text = "Game Over\nPress Enter / Pause to play again";
         winLoseText.enabled = true;
         StopTime();
@@ -60,6 +67,7 @@ public class GameManager : MonoBehaviour
 
     private void WinGame()
     {
+        CleanUI();
         winLoseText.text = "You win!\nPress Enter / Pause to play again";
         winLoseText.enabled = true;
         StopTime();
@@ -75,6 +83,12 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1.0f;
     }
 
+    private void CleanUI()
+    {
+        winLoseText.enabled = false;
+        returnToSpaceShipText.enabled = false;
+    }
+
     public void FoundCrewmate()
     {
         crewmatesFound++;
@@ -82,13 +96,21 @@ public class GameManager : MonoBehaviour
         if (crewmatesFound >= crewmatesTotal)
         {
             // Separate audio for finding all crewmates? 
-            returnToSpaceShipText.enabled = true;
             allCrewmatesFound = true;
+            returnToSpaceShipText.enabled = true;
         }
         else
         {
             // PLay default audio
             Debug.Log("Henlo");
+        }
+    }
+
+    public static void RestartGame()
+    {
+        if (Time.timeScale <= 0.01f)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
 }

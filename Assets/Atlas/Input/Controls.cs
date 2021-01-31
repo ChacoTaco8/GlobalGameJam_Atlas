@@ -65,6 +65,14 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""RestartGame"",
+                    ""type"": ""Button"",
+                    ""id"": ""f7c3fc8b-abf9-463f-8ccb-e2f73d161b2b"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -243,6 +251,28 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""action"": ""JumpHeld"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2d749231-9603-409c-a7d9-3ea43aac9dec"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardAndMouse"",
+                    ""action"": ""RestartGame"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4518a754-6916-49b7-9e3b-003b748f03ed"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Controller"",
+                    ""action"": ""RestartGame"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -285,6 +315,7 @@ public class @Controls : IInputActionCollection, IDisposable
         m_CharacterController_Interact = m_CharacterController.FindAction("Interact", throwIfNotFound: true);
         m_CharacterController_CameraInput = m_CharacterController.FindAction("CameraInput", throwIfNotFound: true);
         m_CharacterController_JumpHeld = m_CharacterController.FindAction("JumpHeld", throwIfNotFound: true);
+        m_CharacterController_RestartGame = m_CharacterController.FindAction("RestartGame", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -340,6 +371,7 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_CharacterController_Interact;
     private readonly InputAction m_CharacterController_CameraInput;
     private readonly InputAction m_CharacterController_JumpHeld;
+    private readonly InputAction m_CharacterController_RestartGame;
     public struct CharacterControllerActions
     {
         private @Controls m_Wrapper;
@@ -350,6 +382,7 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @Interact => m_Wrapper.m_CharacterController_Interact;
         public InputAction @CameraInput => m_Wrapper.m_CharacterController_CameraInput;
         public InputAction @JumpHeld => m_Wrapper.m_CharacterController_JumpHeld;
+        public InputAction @RestartGame => m_Wrapper.m_CharacterController_RestartGame;
         public InputActionMap Get() { return m_Wrapper.m_CharacterController; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -377,6 +410,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @JumpHeld.started -= m_Wrapper.m_CharacterControllerActionsCallbackInterface.OnJumpHeld;
                 @JumpHeld.performed -= m_Wrapper.m_CharacterControllerActionsCallbackInterface.OnJumpHeld;
                 @JumpHeld.canceled -= m_Wrapper.m_CharacterControllerActionsCallbackInterface.OnJumpHeld;
+                @RestartGame.started -= m_Wrapper.m_CharacterControllerActionsCallbackInterface.OnRestartGame;
+                @RestartGame.performed -= m_Wrapper.m_CharacterControllerActionsCallbackInterface.OnRestartGame;
+                @RestartGame.canceled -= m_Wrapper.m_CharacterControllerActionsCallbackInterface.OnRestartGame;
             }
             m_Wrapper.m_CharacterControllerActionsCallbackInterface = instance;
             if (instance != null)
@@ -399,6 +435,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @JumpHeld.started += instance.OnJumpHeld;
                 @JumpHeld.performed += instance.OnJumpHeld;
                 @JumpHeld.canceled += instance.OnJumpHeld;
+                @RestartGame.started += instance.OnRestartGame;
+                @RestartGame.performed += instance.OnRestartGame;
+                @RestartGame.canceled += instance.OnRestartGame;
             }
         }
     }
@@ -429,5 +468,6 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnInteract(InputAction.CallbackContext context);
         void OnCameraInput(InputAction.CallbackContext context);
         void OnJumpHeld(InputAction.CallbackContext context);
+        void OnRestartGame(InputAction.CallbackContext context);
     }
 }

@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Atlas/Scenes/SampleScene.unity
-    guid: d1c3109bdb54ad54c8a2b2838528e640
+    path: Assets/Atlas/Scenes/SeanScene.unity
+    guid: 706e02f2c4b83744fa7740ecce341aaa
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 6383cdab74f76424187b2aab6a864698, type: 2}

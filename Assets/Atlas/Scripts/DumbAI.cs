@@ -67,7 +67,7 @@ public class DumbAI : MonoBehaviour
         }
         else if (isSearchingForPlayer)
         {
-            if (Vector3.Distance(transform.position, lastTargetPosition) <= 0.04f)
+            if (Vector3.Distance(transform.position, lastTargetPosition) <= 0.015f)
             {
                 isSearchingForPlayer = false;
             }
