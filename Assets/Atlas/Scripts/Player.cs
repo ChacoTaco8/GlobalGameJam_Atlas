@@ -4,33 +4,23 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
-
-    public Text crewmatesFoundText;
-    public Text returnToSpaceShipText;
     
-    public int crewmatesFound = 0;
-    private int crewmatesTotal = 5;
-
-    private bool allCrewmatesFound = false;
-    public bool isMoving = false;
+    private GameManager _manager = GameManager.Instance; 
     
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag.Equals("Astronaut"))
         {
-            crewmatesFound++;
-            crewmatesFoundText.text = (crewmatesTotal - crewmatesFound).ToString();
-            if (crewmatesFound >= crewmatesTotal)
-            {
-                // Separate audio for finding all crewmates? 
-                returnToSpaceShipText.enabled = true;
-            }
-            else
-            {
-                // PLay default audio
-                Debug.Log("Henlo");
-            }
+            _manager.FoundCrewmate();
             Destroy(other.gameObject);
+        }
+    }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.tag.Equals("Alien"))
+        {
+            _manager.playerIsDead = true;
         }
     }
 }
